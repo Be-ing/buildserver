@@ -24,24 +24,24 @@ SET "PROGRAMFILES_PATH=%ProgramFiles(x86)%"
 
 
 rem ====== Edit to suit your environment =========
-SET VCVERSION=141
+SET VCVERSION=142
 SET PLATFORM_TOOLSET=v%VCVERSION%
 REM The Windows SDK version in use.
-SET WINDOWS_TARGET_PLATFORM_VERSION=10.0.17134.0
+SET WINDOWS_TARGET_PLATFORM_VERSION=10.0.18362.0
 
 REM Allow overriding MSSDKS_PATH from outside this script.
 IF "%MSSDKS_PATH%" == "" (
-  set "MSSDKS_PATH=%PROGRAMFILES_PATH%\Windows Kits"
+  set "MSSDKS_PATH=%PROGRAMFILES_PATH%\Microsoft SDKs\Windows Kits"
 )
 
 REM Allow overriding MSVC_PATH from outside this script.
 IF "%MSVC_PATH%" == "" (
-  SET "MSVC_PATH=%PROGRAMFILES_PATH%\Microsoft Visual Studio\2017\Community\VC"
+  SET "MSVC_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"
 )
 
 REM Allow overriding BUILDTOOLS_PATH from outside this script.
 if "%BUILDTOOLS_PATH%" == "" (
-  SET "BUILDTOOLS_PATH=%PROGRAMFILES_PATH%\Microsoft Visual Studio\2017\BuildTools\VC"
+  SET "BUILDTOOLS_PATH=%MSVC_PATH%\VC\Tools"
 )
 
 REM Allow overriding CMAKEDIR from outside this script.
@@ -51,9 +51,9 @@ if "%CMAKEDIR%" == "" (
 
 REM Verify paths.
 IF EXIST "%MSVC_PATH%" (
-echo Using Visual Studio 2017 Community Edition to build.
+echo Using Visual Studio 2019 Enterprise Edition to build.
 SET "BUILDTOOLS_PATH=%MSVC_PATH%"
-SET BUILDTOOLS_SCRIPT=Auxiliary\Build\vcvarsall.bat
+SET BUILDTOOLS_SCRIPT=VC\Auxiliary\Build\vcvarsall.bat
 
 REM Check whether we have a 64-bit compiler available.
 REM NOTE(rryan): Temporarily disabled because the build doesn't work with a 64-bit compiler.
@@ -67,7 +67,7 @@ rem )
 
 ) ELSE (
 IF EXIST "%BUILDTOOLS_PATH%" (
-echo Using Visual Studio 2017 Build Tools to build.
+echo Using Visual Studio 2019 Build Tools to build.
 SET BUILDTOOLS_SCRIPT=Auxiliary\Build\vcvarsall.bat
 
 SET COMPILER_X86=amd64_x86
@@ -235,8 +235,7 @@ rem RuntimeLibrary: Over-ride the runtime library with this value.
 rem WindowsTargetPlatformVersion: Over-ride the target platform version wih this value. Without this flag, the 
 rem default SDK version is used by VS solutions that do not specify an SDK version explicitly, and this is potentially
 rem not the installed SDK version.
-SET MSBUILD=msbuild /nologo /m /p:PlatformToolset=%PLATFORM_TOOLSET% /p:RuntimeLibrary=%RUNTIME_FLAG% /p:WindowsTargetPlatformVersion=%WINDOWS_TARGET_PLATFORM_VERSION%
-
+SET MSBUILD="%MSVC_PATH%\MSBuild\Current\Bin\msbuild" /nologo /m /p:PlatformToolset=%PLATFORM_TOOLSET% /p:RuntimeLibrary=%RUNTIME_FLAG% /p:WindowsTargetPlatformVersion=%WINDOWS_TARGET_PLATFORM_VERSION%
 
 if %CONFIG_RELEASE% (
   if %CONFIG_FASTBUILD% (
