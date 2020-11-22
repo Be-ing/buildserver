@@ -5,10 +5,8 @@ SET VALRETURN=0
 
 if %MACHINE_X86% (
   set PLATFORM=Win32
-  set COMPILERPROJECT="Visual Studio 15 2017"
 ) else (
   set PLATFORM=x64
-  set COMPILERPROJECT="Visual Studio 15 2017 Win64"
 )
 
 if %CONFIG_RELEASE% (
@@ -31,7 +29,7 @@ SET ADDITIONAL_SETTINGS=
 IF NOT %STATIC_LIBS% (
 SET ADDITIONAL_SETTINGS=-DBUILD_SHARED_LIBS=ON -DWITH_FFTW3_DYNAMIC=ON
 )
-"%CMAKEDIR%\cmake" ../ -G %COMPILERPROJECT% %ADDITIONAL_SETTINGS% -DWITH_FFTW3=ON -DFFTW3_DIR=../../..
+"%CMAKEDIR%\cmake" ../ -G Ninja %ADDITIONAL_SETTINGS% -DWITH_FFTW3=ON -DFFTW3_DIR=../../.. -DCMAKE_INSTALL_PREFIX=%ROOT_DIR%
 IF ERRORLEVEL 1 (
     SET VALRETURN=1
 	goto END
@@ -43,10 +41,16 @@ IF %STATIC_LIBS% (
   set PROJECT=chromaprint
 )
 
-%MSBUILD% chromaprint.sln /p:Configuration=%CONFIG% /p:Platform=%PLATFORM% /t:Clean;%PROJECT%:Rebuild
+"%CMAKEDIR%\cmake" --build . --config %CONFIG% --clean-first
 IF ERRORLEVEL 1 (
     SET VALRETURN=1
 	goto END
+)
+
+"%CMAKEDIR%\cmake" --build . --config %CONFIG% --target install
+IF ERRORLEVEL 1 (
+    SET VALRETURN=1
+    goto END
 )
 
 copy src\%CONFIG%\%PROJECT%.lib %LIB_DIR%
