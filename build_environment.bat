@@ -46,7 +46,7 @@ if "%BUILDTOOLS_PATH%" == "" (
 
 REM Allow overriding CMAKEDIR from outside this script.
 if "%CMAKEDIR%" == "" (
-  SET "CMAKEDIR=%CD%\build\cmake-3.12.2-win32-x86\bin"
+  SET "CMAKEDIR=%CD%\build\cmake-3.19.0-win64-x64\bin"
 )
 
 REM Verify paths.
