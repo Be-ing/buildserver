@@ -1,6 +1,6 @@
 SETLOCAL
 echo "Building libshout"
-set SHOUT_PATH=libshout-2.4.1
+set SHOUT_PATH=libshout-2.4.4
 SET VALRETURN=0
 
 if %MACHINE_X86% (
@@ -23,11 +23,6 @@ if %MACHINE_X86% (
 )
 
 cd build\%SHOUT_PATH%
-
-REM Apply patch fixing:
-REM https://trac.xiph.org/ticket/2244
-REM https://bugs.launchpad.net/mixxx/+bug/1544739
-%BIN_DIR%\patch.exe -N -p1 --verbose < fix_libshout_ticket2244.patch
 
 cd win32
 %MSBUILD% libshout.sln /p:Configuration=%CONFIG% /p:Platform=%PLATFORM% /t:libshout:Clean;libshout:Rebuild
