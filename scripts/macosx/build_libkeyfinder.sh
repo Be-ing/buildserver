@@ -23,6 +23,12 @@ do
   tar -zxf $DEPENDENCIES/$ARCHIVE -C $VERSION-$ARCH --strip-components 1
   cd $VERSION-$ARCH
   source $PROGDIR/environment.sh $ARCH
+    # environment.sh sets CC/CXX to use ccache, but it hasn't been built yet at this point
+  export XCODE_ROOT=$(xcode-select -print-path)
+  export CC="${XCODE_ROOT}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+  export CXX="${XCODE_ROOT}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
+  export CPP="$CC -E"
+  export CXXCPP="$CXX -E"
   cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$MIXXX_PREFIX" -DCMAKE_OSX_DEPLOYMENT_TARGET="$MIXXX_MACOSX_TARGET" -DCMAKE_OSX_SYSROOT="$SDKROOT" -DCMAKE_VERBOSE_MAKEFILE=TRUE -DBUILD_SHARED_LIBS=TRUE
   cmake --build build --target install
   cd ..
