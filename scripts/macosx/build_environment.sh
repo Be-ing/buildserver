@@ -103,6 +103,8 @@ source $PROGDIR/environment.sh
 export HOST=$TARGET_X86_64
 export HOST_ARCH=x86_64
 
+$PROGDIR/build_fftw.sh
+$PROGDIR/build_libkeyfinder.sh
 # Setup build systems first so that we can build other projects that use them.
 $PROGDIR/build_cmake.sh
 $PROGDIR/build_zstd.sh
